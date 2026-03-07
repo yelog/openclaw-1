@@ -692,7 +692,7 @@ function buildChatCommands(): ChatCommandDefinition[] {
       description: "Fetch pinned message from current Telegram chat.",
       textAlias: "/getpinned",
       category: "tools",
-      scope: "native",
+      scope: "both",
     }),
     defineChatCommand({
       key: "queue",
