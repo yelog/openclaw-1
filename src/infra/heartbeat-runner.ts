@@ -660,8 +660,14 @@ export async function runHeartbeatOnce(opts: {
         })
       : { showOk: false, showAlerts: true, useIndicator: true };
   const { sender } = resolveHeartbeatSenderContext({ cfg, entry, delivery });
+  // Heartbeat messages always originate from the gateway internally (webchat).
+  // Do not leave OriginatingChannel undefined — that would cause session-delivery
+  // to fall back to persistedLastChannel, potentially inheriting a stale channel
+  // from previous external sessions (e.g., feishu), leading to incorrect routing.
+  // See: https://github.com/openclaw/openclaw/issues/35300
+  const heartbeatOriginatingChannel = delivery.channel !== "none" ? delivery.channel : "webchat";
   const responsePrefix = resolveEffectiveMessagesConfig(cfg, agentId, {
-    channel: delivery.channel !== "none" ? delivery.channel : undefined,
+    channel: heartbeatOriginatingChannel,
     accountId: delivery.accountId,
   }).responsePrefix;
 
@@ -674,12 +680,6 @@ export async function runHeartbeatOnce(opts: {
     preflight,
     canRelayToUser,
   });
-  // Heartbeat messages always originate from the gateway internally (webchat).
-  // Do not leave OriginatingChannel undefined — that would cause session-delivery
-  // to fall back to persistedLastChannel, potentially inheriting a stale channel
-  // from previous external sessions (e.g., feishu), leading to incorrect routing.
-  // See: https://github.com/openclaw/openclaw/issues/35300
-  const heartbeatOriginatingChannel = delivery.channel !== "none" ? delivery.channel : "webchat";
   const ctx = {
     Body: appendCronStyleCurrentTimeLine(prompt, cfg, startedAt),
     From: sender,
