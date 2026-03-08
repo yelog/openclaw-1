@@ -131,10 +131,12 @@ export async function sendTelegramText(
     return res.message_id;
   };
 
-  // Markdown can render to empty HTML for syntax-only chunks; recover with plain text.
+  // Skip empty messages silently — agents may emit NO_REPLY or heartbeat ack
+  // that should not be sent as Telegram messages. Return 0 as skip sentinel.
   if (!htmlText.trim()) {
     if (!hasFallbackText) {
-      throw new Error("telegram sendMessage failed: empty formatted text and empty plain fallback");
+      runtime.log?.(`telegram sendMessage skipped: empty text chat=${chatId}`);
+      return 0;
     }
     return await sendPlainFallback();
   }

@@ -136,6 +136,10 @@ async function deliverTextReply(params: {
         replyMarkup: shouldAttachButtons ? params.replyMarkup : undefined,
       },
     );
+    // Skip delivery state updates for skipped messages (return value 0)
+    if (messageId === 0) {
+      continue;
+    }
     if (firstDeliveredMessageId == null) {
       firstDeliveredMessageId = messageId;
     }
@@ -166,7 +170,7 @@ async function sendPendingFollowUpText(params: {
       replyToMode: params.replyToMode,
       progress: params.progress,
     });
-    await sendTelegramText(params.bot, params.chatId, chunk.html, params.runtime, {
+    const messageId = await sendTelegramText(params.bot, params.chatId, chunk.html, params.runtime, {
       replyToMessageId: replyToForFollowUp,
       thread: params.thread,
       textMode: "html",
@@ -174,6 +178,10 @@ async function sendPendingFollowUpText(params: {
       linkPreview: params.linkPreview,
       replyMarkup: i === 0 ? params.replyMarkup : undefined,
     });
+    // Skip delivery state updates for skipped messages (return value 0)
+    if (messageId === 0) {
+      continue;
+    }
     markReplyApplied(params.progress, replyToForFollowUp);
     markDelivered(params.progress);
   }
@@ -221,6 +229,10 @@ async function sendTelegramVoiceFallbackText(opts: {
       linkPreview: opts.linkPreview,
       replyMarkup: !appliedReplyTo ? opts.replyMarkup : undefined,
     });
+    // Skip skipped messages (return value 0)
+    if (messageId === 0) {
+      continue;
+    }
     if (firstDeliveredMessageId == null) {
       firstDeliveredMessageId = messageId;
     }
