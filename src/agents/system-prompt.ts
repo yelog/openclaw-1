@@ -502,8 +502,8 @@ export function buildAgentSystemPrompt(params: {
       : "",
     params.modelAliasLines && params.modelAliasLines.length > 0 && !isMinimal ? "" : "",
     userTimezone
-      ? "If you need the current date, time, or day of week, run session_status (📊 session_status)."
-      : "",
+      ? "If you need the current time or day of week, run session_status (📊 session_status). The current date is shown in the 'Current Date & Time' section above."
+      : "If you need the current date, time, or day of week, run session_status (📊 session_status).",
     "## Workspace",
     `Your working directory is: ${displayWorkspaceDir}`,
     workspaceGuidance,
