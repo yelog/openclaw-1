@@ -9,6 +9,8 @@ export type BrowserProfileConfig = {
   attachOnly?: boolean;
   /** Profile color (hex). Auto-assigned at creation. */
   color: string;
+  /** Start Chrome headless for this profile (best-effort). Falls back to browser.headless. */
+  headless?: boolean;
 };
 export type BrowserSnapshotDefaults = {
   /** Default snapshot mode (applies when mode is not provided). */
