@@ -7,6 +7,7 @@ export type GatewayServiceInstallArgs = {
   workingDirectory?: string;
   environment?: GatewayServiceEnv;
   description?: string;
+  processType?: string;
 };
 
 export type GatewayServiceManageArgs = {

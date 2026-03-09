@@ -367,6 +367,7 @@ export async function maybeRepairGatewayServiceConfig(
       programArguments: updatedPlan.programArguments,
       workingDirectory: updatedPlan.workingDirectory,
       environment: updatedPlan.environment,
+      processType: cfgForServiceInstall.gateway?.launchd?.processType,
     });
   } catch (err) {
     runtime.error(`Gateway service update failed: ${String(err)}`);

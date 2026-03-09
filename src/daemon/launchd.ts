@@ -76,6 +76,7 @@ export function buildLaunchAgentPlist({
   stdoutPath,
   stderrPath,
   environment,
+  processType,
 }: {
   label?: string;
   comment?: string;
@@ -84,6 +85,7 @@ export function buildLaunchAgentPlist({
   stdoutPath: string;
   stderrPath: string;
   environment?: Record<string, string | undefined>;
+  processType?: string;
 }): string {
   return buildLaunchAgentPlistImpl({
     label,
@@ -93,6 +95,7 @@ export function buildLaunchAgentPlist({
     stdoutPath,
     stderrPath,
     environment,
+    processType,
   });
 }
 
@@ -377,6 +380,7 @@ export async function installLaunchAgent({
   workingDirectory,
   environment,
   description,
+  processType,
 }: GatewayServiceInstallArgs): Promise<{ plistPath: string }> {
   const { logDir, stdoutPath, stderrPath } = resolveGatewayLogPaths(env);
   await fs.mkdir(logDir, { recursive: true });
@@ -406,6 +410,7 @@ export async function installLaunchAgent({
     stdoutPath,
     stderrPath,
     environment,
+    processType,
   });
   await fs.writeFile(plistPath, plist, "utf8");
 

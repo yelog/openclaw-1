@@ -66,6 +66,7 @@ export async function installGatewayDaemonNonInteractive(params: {
       programArguments,
       workingDirectory,
       environment,
+      processType: params.nextConfig.gateway?.launchd?.processType,
     });
   } catch (err) {
     runtime.error(`Gateway service install failed: ${String(err)}`);

@@ -205,6 +205,7 @@ export async function maybeRepairGatewayDaemon(params: {
             programArguments,
             workingDirectory,
             environment,
+            processType: params.cfg.gateway?.launchd?.processType,
           });
         } catch (err) {
           note(`Gateway service install failed: ${String(err)}`, "Gateway");

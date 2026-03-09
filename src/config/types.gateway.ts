@@ -413,4 +413,14 @@ export type GatewayConfig = {
    * Set to 0 to disable. Default: 5.
    */
   channelHealthCheckMinutes?: number;
+  /**
+   * macOS launchd ProcessType for the Gateway LaunchAgent.
+   * Set to "Standard" to prevent macOS from killing the gateway under thermal
+   * management / App Nap when running heavy agent workloads.
+   * Default: unset (macOS default behavior).
+   * Options: "Standard" | "Interactive" | "Background" | "Adaptive"
+   */
+  launchd?: {
+    processType?: "Standard" | "Interactive" | "Background" | "Adaptive";
+  };
 };
