@@ -510,7 +510,8 @@ export function buildAgentSystemPrompt(params: {
       ? params.modelAliasLines.join("\n")
       : "",
     params.modelAliasLines && params.modelAliasLines.length > 0 && !isMinimal ? "" : "",
-    userTimezone
+    // Only tell agent to call session_status for date/time when userTime is NOT embedded in the prompt
+    userTimezone && !params.userTime
       ? "If you need the current date, time, or day of week, run session_status (📊 session_status)."
       : "",
     "## Workspace",
