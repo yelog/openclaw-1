@@ -155,11 +155,11 @@ export async function writeOAuthCredentials(
   provider: string,
   creds: OAuthCredentials,
   agentDir?: string,
-  options?: WriteOAuthCredentialsOptions,
+  options?: WriteOAuthCredentialsOptions & { profileId?: string },
 ): Promise<string> {
   const email =
     typeof creds.email === "string" && creds.email.trim() ? creds.email.trim() : "default";
-  const profileId = `${provider}:${email}`;
+  const profileId = options?.profileId?.trim() || `${provider}:${email}`;
   const resolvedAgentDir = path.resolve(resolveAuthAgentDir(agentDir));
   const targetAgentDirs = options?.syncSiblingAgents
     ? resolveSiblingAgentDirs(resolvedAgentDir)

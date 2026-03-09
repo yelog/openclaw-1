@@ -263,6 +263,7 @@ type LoginOptions = {
   provider?: string;
   method?: string;
   setDefault?: boolean;
+  profileId?: string;
 };
 
 export function resolveRequestedLoginProviderOrThrow(
@@ -318,6 +319,7 @@ async function runBuiltInOpenAICodexLogin(params: {
 
   const profileId = await writeOAuthCredentials("openai-codex", creds, params.agentDir, {
     syncSiblingAgents: true,
+    profileId: params.opts.profileId,
   });
   await updateConfig((cfg) => {
     let next = applyAuthProfileConfig(cfg, {
@@ -425,12 +427,18 @@ export async function modelsAuthLoginCommand(opts: LoginOptions, runtime: Runtim
     },
   });
 
-  for (const profile of result.profiles) {
+  // If user specified a custom profileId, use it for the first profile (single-account OAuth flows)
+  const customProfileId = opts.profileId?.trim();
+  for (let i = 0; i < result.profiles.length; i += 1) {
+    const profile = result.profiles[i];
+    const effectiveProfileId = i === 0 && customProfileId ? customProfileId : profile.profileId;
     upsertAuthProfile({
-      profileId: profile.profileId,
+      profileId: effectiveProfileId,
       credential: profile.credential,
       agentDir,
     });
+    // Update the profileId in the result for downstream config application
+    profile.profileId = effectiveProfileId;
   }
 
   await updateConfig((cfg) => {
