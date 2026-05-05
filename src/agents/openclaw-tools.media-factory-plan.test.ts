@@ -13,7 +13,11 @@ import type { PluginMetadataSnapshot } from "../plugins/plugin-metadata-snapshot
 import { clearSecretsRuntimeSnapshot } from "../secrets/runtime.js";
 import type { AuthProfileStore } from "./auth-profiles/types.js";
 import { resolveOptionalMediaToolFactoryPlan } from "./openclaw-tools.media-factory-plan.js";
-import { DEFAULT_PLUGIN_TOOLS_ALLOWLIST_ENTRY } from "./tool-policy.js";
+import { pickSandboxToolPolicy } from "./sandbox-tool-policy.js";
+import {
+  collectExplicitAllowlist,
+  DEFAULT_PLUGIN_TOOLS_ALLOWLIST_ENTRY,
+} from "./tool-policy.js";
 import * as pdfModelConfigModule from "./tools/pdf-tool.model-config.js";
 
 type CreateOpenClawToolsOptions = Parameters<
@@ -241,7 +245,11 @@ describe("optional media tool factory planning", () => {
         },
       },
     };
-    const allowlistFromAlsoAllowOnlyPolicy = ["group:memory", DEFAULT_PLUGIN_TOOLS_ALLOWLIST_ENTRY];
+    const allowlistFromAlsoAllowOnlyPolicy = collectExplicitAllowlist([
+      pickSandboxToolPolicy({ alsoAllow: ["group:memory"] }),
+    ]);
+    expect(allowlistFromAlsoAllowOnlyPolicy).not.toContain("*");
+    expect(allowlistFromAlsoAllowOnlyPolicy).toContain(DEFAULT_PLUGIN_TOOLS_ALLOWLIST_ENTRY);
     installSnapshot(config, []);
 
     expect(
